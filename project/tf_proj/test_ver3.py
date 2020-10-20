@@ -123,7 +123,7 @@ def evaluate(X_test, y_test):
     batch_size = 16
 
     # Load Model
-    model = load_model('project/tf_proj/model/model5.h5')
+    model = load_model('project/tf_proj/model/model_standardNN.h5')
     print(model.summary())
     return model.evaluate(X_test, y_test, batch_size, verbose = 1)
 

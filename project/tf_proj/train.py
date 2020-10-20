@@ -110,28 +110,29 @@ def CNN_model2():
     tf.keras.layers.MaxPooling2D(strides=(2,2)),
 
     tf.keras.layers.Conv2D(32, 3, padding='same', activation='relu'),
-   
-    tf.keras.layers.MaxPooling2D(strides=(2,2)),    
-    tf.keras.layers.Dropout(0.3, noise_shape=None, seed=None),
+    # tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.MaxPooling2D(strides=(2,2)),
+    tf.keras.layers.Dropout(0.3, noise_shape=None, seed=None),    
 
     tf.keras.layers.Conv2D(64, 3, padding='same', activation='relu'),
+    tf.keras.layers.BatchNormalization(),
     tf.keras.layers.MaxPooling2D(strides=(2,2)),
     tf.keras.layers.Dropout(0.3, noise_shape=None, seed=None),
 
-    tf.keras.layers.Conv2D(128, 3, padding='same', activation='relu'),
-    tf.keras.layers.MaxPooling2D(strides=(2,2)),
-    tf.keras.layers.Dropout(0.3, noise_shape=None, seed=None),
-
-    tf.keras.layers.Conv2D(256, 3, padding='same', activation='relu'),
-    tf.keras.layers.MaxPooling2D(strides=(2,2)),
-    tf.keras.layers.Dropout(0.3, noise_shape=None, seed=None),
+    tf.keras.layers.Conv2D(128, 3, padding='same', activation='relu', 
+    kernel_regularizer=tf.keras.regularizers.L1L2(l1=0.01, l2=0.01)),
+    # tf.keras.layers.MaxPooling2D(strides=(2,2)),
+    # tf.keras.layers.Dropout(0.3, noise_shape=None, seed=None),
 
     tf.keras.layers.Flatten(),
     tf.keras.layers.Dense(128, activation='relu'),
     tf.keras.layers.Dense(num_classes, activation="softmax")
     ])
 
-    model.compile(optimizer='adam',
+    opt = tf.keras.optimizers.Adam(
+        learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7
+    )
+    model.compile(optimizer=opt,
               loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
@@ -209,7 +210,7 @@ def train_model(model, train_generator, validation_generator):
     :return:model:   the trained CNN model
     """
     # Add your code here
-    epochs=300
+    epochs=95
     batch_size = 30
     # history = model.fit(
     # train_data,
@@ -261,7 +262,7 @@ def save_model(model):
     #   Please remove the comment to enable model save.
     #   However, it will overwrite the baseline model we provided.
     # ***
-    model.save("project/tf_proj/model/model3.h5")
+    model.save("project/tf_proj/model/model1.h5")
     print("Model Saved Successfully.")
 
 def pre_plot_imgs(train_data):
